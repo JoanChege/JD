@@ -28,6 +28,12 @@
         <span class="carousel-control-next-icon"></span>
     </button>
 </div>
+<h2>Categories</h2>
+<ul>
+    {% for category in categories %}
+    <li><a href="{{ url_for('category', category_id=category.id) }}">{{ category.name }}</a></li>
+    {% endfor %}
+</ul>
 <div class="row mt-4">
     {% for product in products %}
     <div class="col-md-4">

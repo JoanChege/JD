@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ product.name }}</h1>
+<img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+<p>{{ product.description }}</p>
+<p>${{ product.price }}</p>
+
+<!-- Show Product Category and Subcategory -->
+<p>Category: <a href="{{ url_for('category', category_id=product.category.id) }}">{{ product.category.name }}</a></p>
+<p>Subcategory: <a href="{{ url_for('subcategory', subcategory_id=product.subcategory.id) }}">{{ product.subcategory.name }}</a></p>
+
+<a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-primary">Add to Cart</a>
+{% endblock %}
