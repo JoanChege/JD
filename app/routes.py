@@ -51,3 +51,12 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/search')
+def search():
+    q = request.args.get('q') 
+    if q:
+        products = Product.query.filter(Product.name.ilike(f"%{q}%")).all() 
+    else:
+        products = Product.query.all() 
+    return render_template('search_results.html', products=products, query=q) 
