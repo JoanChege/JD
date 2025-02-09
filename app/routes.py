@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user, L
 from app import app, db
 from flask_bcrypt import Bcrypt
 from app.models import User, Product, Category, Subcategory
-from forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm
 
 bcrypt = Bcrypt()
 
@@ -27,7 +27,7 @@ def product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('product.html', product=product)
 
-@app.before_first_request
+@app.before_request
 def initialize_cart():
     session['cart'] = []
     
@@ -119,6 +119,7 @@ def checkout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        # Create a new user
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
@@ -134,7 +135,7 @@ def login():
     if form.validate_on_submit():
         # Check if the user exists and the password is correct
         user = User.query.filter_by(email=form.email.data).first()
-        if user and user.password == form.password.data:  # In a real app, use password hashing!
+        if user and bcrypt.check_password_hash(user.password, form.password.data):  # In a real app, use password hashing!
             login_user(user)
             flash('You have been logged in!', 'success')
             return redirect(url_for('index'))
